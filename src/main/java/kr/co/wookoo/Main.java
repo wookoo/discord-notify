@@ -9,7 +9,7 @@ import static java.lang.System.exit;
 
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         String token = System.getenv("TOKEN");
         if (token == null || token.isEmpty()) {
@@ -21,6 +21,10 @@ public class Main {
                 .addEventListeners(new MessageReceiver(),new AutoChat())
                 .setActivity(Activity.playing("허리수술 2000만원"))
                 .build();
+
+//        GraphQLClient graphQLClient = new GraphQLClient();
+//
+//        System.out.println(graphQLClient.fetchTraderResetTimes());
     }
 
 }
