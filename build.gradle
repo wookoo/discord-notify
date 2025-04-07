@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+
 }
 
 group = 'org.example'
@@ -21,9 +23,18 @@ dependencies {
 }
 
 jar {
-    archiveFileName = 'discord-bot.jar'
+    manifest {
+        attributes(
+                'Main-Class': 'kr.co.wookoo.Main'
+        )
+    }
 }
-
+shadowJar {
+    archiveFileName = 'discord-bot.jar'
+    manifest {
+        attributes 'Main-Class': 'kr.co.wookoo.Main'
+    }
+}
 
 test {
     useJUnitPlatform()
