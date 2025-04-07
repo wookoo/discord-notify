@@ -18,7 +18,7 @@ public class Main {
         }
         JDABuilder.createDefault(token)
                 .enableIntents(GatewayIntent.GUILD_MESSAGES,GatewayIntent.MESSAGE_CONTENT)
-                .addEventListeners(new MessageReceiver())
+                .addEventListeners(new MessageReceiver(),new AutoChat())
                 .setActivity(Activity.playing("허리수술 2000만원"))
                 .build();
     }
