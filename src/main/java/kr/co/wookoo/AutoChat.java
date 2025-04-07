@@ -51,8 +51,8 @@ public class AutoChat extends ListenerAdapter {
 
     }
 
-    private void initTraderMessage(Guild guild) throws Exception {
-        Runnable task = new Runnable() {
+    private void initTraderMessage(Guild guild) {
+        Runnable scheduleNextReset = new Runnable() {
             @Override
             public void run() {
                 try {
@@ -62,24 +62,22 @@ public class AutoChat extends ListenerAdapter {
                             .min(Comparator.comparing(TraderResetTime::getResetTimestamp))
                             .orElse(null);
 
-                    if (nextReset != null) {
+                    if (nextReset == null) return;
+
+                    Instant now = Instant.now();
+                    Instant resetTime = nextReset.getResetTimestamp();
+                    long delayMillis = Duration.between(now, resetTime).toMillis();
+
+                    Runnable notifyAndReschedule = () -> {
                         guild.getVoiceChannels().forEach(channel -> {
                             if (!channel.getMembers().isEmpty()) {
                                 channel.sendMessage(nextReset.getName() + " 상인 초기화됨 구매 ㄱㄱ").queue();
                             }
                         });
-                        Instant now = Instant.now();
-
-                        System.out.println(now);
-                        System.out.println(nextReset.getName());
-                        System.out.println(nextReset.getResetTimestamp());
-
-
-                        Duration delay = Duration.between(now, nextReset.getResetTimestamp());
-                        long delayMillis = delay.toMillis();
-
-                        scheduler.schedule(this, delayMillis, TimeUnit.MILLISECONDS); // 재귀 등록
-                    }
+                        // 다음 리셋을 위한 재귀 예약
+                        scheduler.execute(this);
+                    };
+                    scheduler.schedule(notifyAndReschedule, delayMillis, TimeUnit.MILLISECONDS);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -87,9 +85,9 @@ public class AutoChat extends ListenerAdapter {
             }
         };
 
-        scheduler.execute(task);
-
+        scheduler.execute(scheduleNextReset);
     }
+
 
     private void initDiskMessage(Guild guild) {
 
