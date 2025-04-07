@@ -15,10 +15,16 @@ import java.util.concurrent.TimeUnit;
 
 public class AutoChat extends ListenerAdapter {
 
-    private static final String TARGET_GUILD_ID = "1358736723659456562";
+
+
 
     @Override
     public void onReady(ReadyEvent event) {
+        String TARGET_GUILD_ID = System.getenv("TARGET_GUILD_ID");
+        if(TARGET_GUILD_ID == null) {
+            System.out.println("길드 아이디 없음");
+            return;
+        }
         Guild guild = event.getJDA().getGuildById(TARGET_GUILD_ID);
         if (guild == null) {
             System.out.println("채널이 없음");
