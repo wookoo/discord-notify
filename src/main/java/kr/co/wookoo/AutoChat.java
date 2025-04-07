@@ -1,17 +1,16 @@
 package kr.co.wookoo;
 
+import kr.co.wookoo.http.HttpClient;
+import kr.co.wookoo.http.Client;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import java.security.Key;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -56,16 +55,16 @@ public class AutoChat extends ListenerAdapter {
             @Override
             public void run() {
                 try {
-                    GraphQLClient graphQLClient = new GraphQLClient();
-                    List<TraderResetTime> traderResetTimes = graphQLClient.fetchTraderResetTimes();
+                    Client client = new HttpClient();
+                    List<TraderResetTime> traderResetTimes = client.fetchTraderResetTimes();
                     TraderResetTime nextReset = traderResetTimes.stream()
-                            .min(Comparator.comparing(TraderResetTime::getResetTimestamp))
+                            .min(Comparator.comparing(TraderResetTime::getResetTime))
                             .orElse(null);
 
                     if (nextReset == null) return;
 
                     Instant now = Instant.now();
-                    Instant resetTime = nextReset.getResetTimestamp();
+                    Instant resetTime = nextReset.getResetTime();
                     long delayMillis = Duration.between(now, resetTime).toMillis();
 
                     Runnable notifyAndReschedule = () -> {

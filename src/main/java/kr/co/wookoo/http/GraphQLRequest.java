@@ -1,6 +1,6 @@
-package kr.co.wookoo;
+package kr.co.wookoo.http;
 
-public class GraphQLRequest {
+class GraphQLRequest {
 
     public String query;
 

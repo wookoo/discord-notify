@@ -7,15 +7,7 @@ import java.time.LocalDateTime;
 
 public class TraderResetTime {
     private String name;
-    private Instant resetTimestamp;
-
-    public Instant getResetTimestamp() {
-        return resetTimestamp;
-    }
-
-    public void setResetTimestamp(Instant resetTimestamp) {
-        this.resetTimestamp = resetTimestamp;
-    }
+    private Instant resetTime;
 
     public String getName() {
         return name;
@@ -25,11 +17,19 @@ public class TraderResetTime {
         this.name = name;
     }
 
+    public Instant getResetTime() {
+        return resetTime;
+    }
+
+    public void setResetTime(Instant resetTime) {
+        this.resetTime = resetTime;
+    }
+
     @Override
     public String toString() {
         return "TraderResetTime{" +
                 "name='" + name + '\'' +
-                ", resetTimestamp=" + resetTimestamp +
+                ", resetTime=" + resetTime +
                 '}';
     }
 }

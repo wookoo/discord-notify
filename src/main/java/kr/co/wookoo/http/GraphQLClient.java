@@ -1,16 +1,17 @@
-package kr.co.wookoo;
+package kr.co.wookoo.http;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import kr.co.wookoo.TraderResetTime;
 import okhttp3.*;
-
 import java.io.IOException;
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
-public class GraphQLClient {
+public class GraphQLClient implements Client {
 
     private static final String ENDPOINT = "https://api.tarkov.dev/graphql";
     private final OkHttpClient client;
@@ -56,11 +57,10 @@ public class GraphQLClient {
 
 
             Set<String> excludedNames = Set.of("fence", "lightkeeper", "ref", "btr driver");
-
+            Instant now = Instant.now();
             return allTraders.stream()
-                    .filter(trader -> !excludedNames.contains(trader.getName().toLowerCase()))
+                    .filter(trader -> !excludedNames.contains(trader.getName().toLowerCase()) && trader.getResetTime().isAfter(now))
                     .toList();
-
         }
     }
 }
