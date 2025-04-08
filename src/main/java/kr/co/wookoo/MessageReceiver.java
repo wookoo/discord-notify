@@ -11,7 +11,7 @@ public class MessageReceiver extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if (event.getAuthor().isBot()) {
+        if (event.getAuthor().isBot() || true) {
             return;
         }
 
@@ -23,6 +23,8 @@ public class MessageReceiver extends ListenerAdapter {
 
         if (sender != null && sender.hasPermission(Permission.ADMINISTRATOR)) {
             String message = event.getMessage().getContentRaw();
+            System.out.println(message);
+            System.out.println(event.getMessage().getType());
             if (!message.strip().equals("알림 전송")) {
                 return;
             }

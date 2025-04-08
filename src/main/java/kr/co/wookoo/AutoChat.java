@@ -57,13 +57,14 @@ public class AutoChat extends ListenerAdapter {
                 try {
                     Client client = new HttpClient();
                     List<TraderResetTime> traderResetTimes = client.fetchTraderResetTimes();
+                    Instant now = Instant.now();
                     TraderResetTime nextReset = traderResetTimes.stream()
+                            .filter(t -> t.getResetTime().isAfter(now)) // 현재 시간 이후만 필터
                             .min(Comparator.comparing(TraderResetTime::getResetTime))
                             .orElse(null);
 
                     if (nextReset == null) return;
 
-                    Instant now = Instant.now();
                     Instant resetTime = nextReset.getResetTime();
                     long delayMillis = Duration.between(now, resetTime).toMillis();
 

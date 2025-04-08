@@ -39,12 +39,7 @@ public class HttpClient implements Client {
             if (!response.isSuccessful()) {
                 throw new IOException("Unexpected code " + response);
             }
-
-            Instant now = Instant.now();
-            List<TraderResetTime> traderResetTimes = mapper.readerForListOf(TraderResetTime.class).readValue(text);
-            return traderResetTimes.stream()
-                    .filter(t -> t.getResetTime().isAfter(now))
-                    .collect(Collectors.toList());
+            return mapper.readerForListOf(TraderResetTime.class).readValue(text);
         }
 
     }
