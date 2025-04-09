@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import kr.co.wookoo.TraderResetTime;
+import kr.co.wookoo.dto.TraderResetTime;
 import okhttp3.*;
 import java.io.IOException;
 import java.time.Instant;

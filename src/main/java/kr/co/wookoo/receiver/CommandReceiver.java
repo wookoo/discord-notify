@@ -1,5 +1,8 @@
 package kr.co.wookoo.receiver;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.co.wookoo.dto.ItemInfo;
 import kr.co.wookoo.dto.TraderResetTime;
 import kr.co.wookoo.http.Client;
 import kr.co.wookoo.http.HttpClient;
@@ -7,17 +10,42 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class CommandReceiver extends ListenerAdapter {
+
+
+    private List<ItemInfo> itemInfoList = null;
+
+    public CommandReceiver() {
+        ObjectMapper mapper = new ObjectMapper();
+
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream("item.json")) {
+            if (in == null) {
+                return;
+            }
+            JsonNode items = mapper.readTree(in).get("data").get("items");
+            this.itemInfoList = mapper.readerForListOf(ItemInfo.class).readValue(items.toString());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 
 
     @Override
@@ -81,19 +109,45 @@ public class CommandReceiver extends ListenerAdapter {
                 } catch (IOException e) {
                     event.reply("서버가 이상함").queue();
                 }
-
+                break;
             case "플리가격":
-
-                event.reply("어떤 아이템인가?")
-                        .addActionRow(
-                                Button.of(ButtonStyle.LINK,"https://naver.com","테스트"),
-                                Button.of(ButtonStyle.PRIMARY,"aaa","테스트"),
-                                Button.secondary("엄준식","엄준식")
-
-                        )
-                        .queue();
+                itemSearchAction(event);
             default:
                 event.reply("명령어가 없는데??").queue();
         }
+    }
+
+    private void itemSearchAction(SlashCommandInteractionEvent event) {
+
+        String name = event.getOption("아이템-이름").getAsString();
+
+
+        if (itemInfoList == null) {
+            event.reply("뭔가 오류가 발생함").queue();
+            return;
+        }
+
+        List<ItemInfo> choicedList = new ArrayList<>();
+        for (ItemInfo itemInfo : itemInfoList) {
+            if (itemInfo.getName().contains(name)) {
+                choicedList.add(itemInfo);
+            }
+        }
+        if(choicedList.isEmpty()) {
+            event.reply("일치하는 아이템이 한개도 없다! 한국어 이름으로 ㄱㄱ").queue();
+            return;
+        }
+
+        int limit = Math.min(choicedList.size(), 5);
+        List<Button> buttons = new ArrayList<>();
+        for (int i = 0; i < limit; i++) {
+            ItemInfo itemInfo = choicedList.get(i);
+            buttons.add(
+                    Button.secondary("item:"+itemInfo.getId(),itemInfo.getName())
+            );
+        }
+        event.reply("어떤 아이템인가?").addActionRow(buttons).queue();
+
+
     }
 }

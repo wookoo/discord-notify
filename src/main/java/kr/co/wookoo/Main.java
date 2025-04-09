@@ -1,12 +1,12 @@
 package kr.co.wookoo;
 
-import kr.co.wookoo.http.HttpClient;
+import kr.co.wookoo.receiver.CommandReceiver;
+import kr.co.wookoo.receiver.MessageReceiver;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.interactions.InteractionContextType;
-import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -47,6 +47,12 @@ public class Main {
         commands.addCommands(
                 Commands.slash("상인시간", "남은 상인시간을 표시합니다.")
                         .setContexts(InteractionContextType.GUILD)
+        );
+        commands.addCommands(
+                Commands.slash("플리가격","아이템 플리 가격을 대충 표시합니다.")
+                        .addOption(OptionType.STRING,"아이템-이름","아이템 이름을 적어주세요.")
+                        .setContexts(InteractionContextType.GUILD)
+
         );
 
         commands.queue();
