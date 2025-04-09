@@ -91,12 +91,12 @@ public class CommandReceiver extends ListenerAdapter {
                         channel.sendMessageEmbeds(embed.build()).queue();
                     }
                 });
-                event.reply("메시지 발송 완료").queue();
+                event.reply("메시지 발송 완료").setEphemeral(true).queue();
                 break;
             case "상태변경":
                 String status = event.getOption("상태").getAsString();
                 jda.getPresence().setActivity(Activity.of(Activity.ActivityType.COMPETING, status));
-                event.reply("상태를 " + status + "로 업데이트 완료").queue();
+                event.reply("상태를 " + status + "로 업데이트 완료").setEphemeral(true).queue();
 
             case "상인시간":
                 Client client = new HttpClient();
@@ -118,9 +118,9 @@ public class CommandReceiver extends ListenerAdapter {
                         }
 
                     }
-                    event.reply(sb.toString()).queue();
+                    event.reply(sb.toString()).setEphemeral(true).queue();
                 } catch (IOException e) {
-                    event.reply("서버가 이상함").queue();
+                    event.reply("서버가 이상함").setEphemeral(true).queue();
                 }
                 break;
             case "플리가격":
@@ -157,7 +157,7 @@ public class CommandReceiver extends ListenerAdapter {
                     Button.secondary("item:" + itemInfo.getId(), itemInfo.getName())
             );
         }
-        event.reply("어떤 아이템인가?").addActionRow(buttons).queue();
+        event.reply("어떤 아이템인가?").addActionRow(buttons).setEphemeral(true).queue();
     }
 
 
@@ -181,10 +181,10 @@ public class CommandReceiver extends ListenerAdapter {
                     .setImage(itemInfo.getImageLink())
                     .setTitle(itemInfo.getName())
                             .setDescription("가격 : " +itemPrice.getPrice()+"\n업데이트 시각 : " + formattedTime + " (" + minutes +"분 전 업데이트 )");
-            event.replyEmbeds(embed.build()).queue();
+            event.replyEmbeds(embed.build()).setEphemeral(true).queue();
         } catch (IOException e) {
             e.printStackTrace();
-            event.reply("탈콥 데브서버 이상함").queue();
+            event.reply("탈콥 데브서버 이상함").setEphemeral(true).queue();
         }
         event.getMessage().delete().queue();
     }
