@@ -1,11 +1,15 @@
 package kr.co.wookoo.http;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import kr.co.wookoo.dto.ItemInfo;
+import kr.co.wookoo.dto.ItemPrice;
 import kr.co.wookoo.dto.TraderResetTime;
 import okhttp3.*;
+
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
@@ -61,6 +65,35 @@ public class GraphQLClient implements Client {
             return allTraders.stream()
                     .filter(trader -> !excludedNames.contains(trader.getName().toLowerCase()) && trader.getResetTime().isAfter(now))
                     .toList();
+        }
+    }
+
+    public ItemPrice fetchItemFleaMarketPrice(String id) throws IOException {
+        String query = String.format("""
+                query {
+                  itemPrices(id: "%s", gameMode: pve, offset: -1) {
+                    price
+                    timestamp
+                  }
+                }
+                """, id);
+
+        String body = mapper.writeValueAsString(new GraphQLRequest(query));
+
+        Request request = new Request.Builder()
+                .url(ENDPOINT)
+                .post(RequestBody.create(body, MediaType.get("application/json")))
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            assert response.body() != null;
+            String text = response.body().string();
+            if (!response.isSuccessful()) {
+                throw new IOException("Unexpected code " + response);
+            }
+            JsonNode root = mapper.readTree(text).get("data").get("itemPrices");
+            List<ItemPrice> itemPriceList = mapper.readerForListOf(ItemPrice.class).readValue(root);
+            return itemPriceList.get(0);
         }
     }
 }
