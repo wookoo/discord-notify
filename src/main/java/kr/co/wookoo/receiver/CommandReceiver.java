@@ -145,7 +145,7 @@ public class CommandReceiver extends ListenerAdapter {
             }
         }
         if (choicedList.isEmpty()) {
-            event.reply("일치하는 아이템이 한개도 없다! 한국어 이름으로 ㄱㄱ").queue();
+            event.reply("일치하는 아이템이 한개도 없다! 한국어 이름으로 ㄱㄱ").setEphemeral(true).queue();
             return;
         }
 
@@ -168,19 +168,19 @@ public class CommandReceiver extends ListenerAdapter {
 
         ItemInfo itemInfo = itemInfoMap.get(id);
         try {
-            ItemPrice itemPrice = graphQLClient.fetchItemFleaMarketPrice(id);
-            Instant instant = Instant.ofEpochMilli(itemPrice.getTimestamp());
-            Instant now = Instant.now();
-            Duration duration = Duration.between(instant,now);
-            long minutes = duration.toMinutes();
+            List<ItemPrice> itemPriceList = graphQLClient.fetchItemFleaMarketPriceList(id);
+            int sum = itemPriceList.stream()
+                    .mapToInt(ItemPrice::getPrice)
+                    .sum();
+            int avg = (int) ((double) sum / itemPriceList.size());
+            Instant instant = Instant.ofEpochMilli(itemPriceList.get(0).getTimestamp());
             ZonedDateTime kstTime = instant.atZone(ZoneId.of("Asia/Seoul"));
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
             String formattedTime = kstTime.format(formatter);
             EmbedBuilder embed = new EmbedBuilder()
                     .setImage(itemInfo.getImageLink())
                     .setTitle(itemInfo.getName())
-                            .setDescription("가격 : " +itemPrice.getPrice()+"\n업데이트 시각 : " + formattedTime + " (" + minutes +"분 전 업데이트 )");
+                    .setDescription("1주간 평균 가격 : " + avg + "\n(" + formattedTime + " ~ " + Instant.ofEpochMilli(itemPriceList.get(itemPriceList.size() - 1).getTimestamp()).atZone(ZoneId.of("Asia/Seoul")).format(formatter) + ")");
             event.replyEmbeds(embed.build()).setEphemeral(true).queue();
         } catch (IOException e) {
             e.printStackTrace();

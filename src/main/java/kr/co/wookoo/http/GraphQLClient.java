@@ -68,10 +68,10 @@ public class GraphQLClient implements Client {
         }
     }
 
-    public ItemPrice fetchItemFleaMarketPrice(String id) throws IOException {
+    public List<ItemPrice> fetchItemFleaMarketPriceList(String id) throws IOException {
         String query = String.format("""
                 query {
-                  itemPrices(id: "%s", gameMode: pve, offset: -1) {
+                  historicalItemPrices(id: "%s", gameMode: pve) {
                     price
                     timestamp
                   }
@@ -91,9 +91,8 @@ public class GraphQLClient implements Client {
             if (!response.isSuccessful()) {
                 throw new IOException("Unexpected code " + response);
             }
-            JsonNode root = mapper.readTree(text).get("data").get("itemPrices");
-            List<ItemPrice> itemPriceList = mapper.readerForListOf(ItemPrice.class).readValue(root);
-            return itemPriceList.get(0);
+            JsonNode root = mapper.readTree(text).get("data").get("historicalItemPrices");
+            return mapper.readerForListOf(ItemPrice.class).readValue(root);
         }
     }
 }
