@@ -1,5 +1,6 @@
-package kr.co.wookoo;
+package kr.co.wookoo.receiver;
 
+import kr.co.wookoo.dto.TraderResetTime;
 import kr.co.wookoo.http.Client;
 import kr.co.wookoo.http.HttpClient;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -8,6 +9,8 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -79,6 +82,18 @@ public class CommandReceiver extends ListenerAdapter {
                     event.reply("서버가 이상함").queue();
                 }
 
+            case "플리가격":
+
+                event.reply("어떤 아이템인가?")
+                        .addActionRow(
+                                Button.of(ButtonStyle.LINK,"https://naver.com","테스트"),
+                                Button.of(ButtonStyle.PRIMARY,"aaa","테스트"),
+                                Button.secondary("엄준식","엄준식")
+
+                        )
+                        .queue();
+            default:
+                event.reply("명령어가 없는데??").queue();
         }
     }
 }

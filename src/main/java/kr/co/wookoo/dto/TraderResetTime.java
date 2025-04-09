@@ -1,9 +1,6 @@
-package kr.co.wookoo;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
+package kr.co.wookoo.dto;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 public class TraderResetTime {
     private String name;

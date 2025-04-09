@@ -1,4 +1,4 @@
-package kr.co.wookoo;
+package kr.co.wookoo.receiver;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;

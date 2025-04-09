@@ -1,6 +1,6 @@
 package kr.co.wookoo.http;
 
-import kr.co.wookoo.TraderResetTime;
+import kr.co.wookoo.dto.TraderResetTime;
 
 import java.io.IOException;
 import java.util.List;

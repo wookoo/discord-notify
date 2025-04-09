@@ -1,5 +1,6 @@
 package kr.co.wookoo;
 
+import kr.co.wookoo.dto.TraderResetTime;
 import kr.co.wookoo.http.HttpClient;
 import kr.co.wookoo.http.Client;
 import net.dv8tion.jda.api.EmbedBuilder;
