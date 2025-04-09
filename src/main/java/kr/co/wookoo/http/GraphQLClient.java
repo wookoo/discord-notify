@@ -12,6 +12,7 @@ import okhttp3.*;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -93,6 +94,56 @@ public class GraphQLClient implements Client {
             }
             JsonNode root = mapper.readTree(text).get("data").get("historicalItemPrices");
             return mapper.readerForListOf(ItemPrice.class).readValue(root);
+        }
+    }
+
+    public int getBitcoinPrice() throws IOException {
+        String coinId = "59faff1d86f7746c51718c9c";
+
+        String query = String.format("""
+                query {
+                  item(id: "%s") {
+                    sellFor {
+                      price
+                    }
+                  }
+                }
+                """, coinId);
+
+        String body = mapper.writeValueAsString(new GraphQLRequest(query));
+
+        Request request = new Request.Builder()
+                .url(ENDPOINT)
+                .post(RequestBody.create(body, MediaType.get("application/json")))
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            assert response.body() != null;
+            String text = response.body().string();
+            if (!response.isSuccessful()) {
+                throw new IOException("Unexpected code " + response);
+            }
+            JsonNode root = mapper.readTree(text).get("data").get("item").get("sellFor");
+            List<Price> priceList = mapper.readerForListOf(Price.class).readValue(root);
+            Price maxPrice = priceList.stream()
+                    .max(Comparator.comparingInt(Price::getPrice)).orElse(null);
+            if (maxPrice == null) {
+                return 0;
+            }
+            return maxPrice.getPrice();
+        }
+    }
+
+
+    private static class Price {
+        private int price;
+
+        public int getPrice() {
+            return price;
+        }
+
+        public void setPrice(int price) {
+            this.price = price;
         }
     }
 }

@@ -3,6 +3,7 @@ package kr.co.wookoo.receiver;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.co.wookoo.convertor.TimeConvertor;
 import kr.co.wookoo.dto.ItemInfo;
 import kr.co.wookoo.dto.ItemPrice;
 import kr.co.wookoo.dto.TraderResetTime;
@@ -25,10 +26,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -125,6 +123,26 @@ public class CommandReceiver extends ListenerAdapter {
                 break;
             case "플리가격":
                 itemSearchAction(event);
+
+                break;
+
+            case "비트코인":
+                GraphQLClient graphQLClient = new GraphQLClient();
+                try {
+                    graphQLClient.getBitcoinPrice();
+                    event.reply("현재 가격 : " + graphQLClient.getBitcoinPrice()).setEphemeral(true).queue();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    event.reply("뭔가 오류 나중에 다시 시도").setEphemeral(true).queue();
+                }
+                break;
+
+            case "인게임시간":
+                Instant now = Instant.now();
+                LocalTime leftTime = TimeConvertor.realTimeToTarkovTime(now, true);
+                LocalTime rightTime = TimeConvertor.realTimeToTarkovTime(now, false);
+                event.reply("좌측 : " + leftTime.getHour() + "시" + leftTime.getMinute() + "분\n우측 : " + rightTime.getHour() + "시" + rightTime.getMinute() + "분").setEphemeral(true).queue();
+                break;
             default:
                 event.reply("명령어가 없는데??").queue();
         }
@@ -169,6 +187,10 @@ public class CommandReceiver extends ListenerAdapter {
         ItemInfo itemInfo = itemInfoMap.get(id);
         try {
             List<ItemPrice> itemPriceList = graphQLClient.fetchItemFleaMarketPriceList(id);
+            if (itemPriceList.isEmpty()) {
+                event.reply(itemInfo.getName() + "은 플리 벤임!").setEphemeral(true).queue();
+                return;
+            }
             int sum = itemPriceList.stream()
                     .mapToInt(ItemPrice::getPrice)
                     .sum();

@@ -27,8 +27,8 @@ public class Main {
 
 
         JDA jda = JDABuilder.createDefault(token)
-                .enableIntents(GatewayIntent.GUILD_MESSAGES,GatewayIntent.MESSAGE_CONTENT)
-                .addEventListeners(new MessageReceiver(),new AutoChat(),new CommandReceiver())
+                .enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT)
+                .addEventListeners(new MessageReceiver(), new AutoChat(), new CommandReceiver())
                 .setActivity(Activity.playing("허리수술 2000만원"))
                 .build();
 
@@ -39,8 +39,8 @@ public class Main {
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
         );
         commands.addCommands(
-                Commands.slash("상태변경","봇의 상태를 변경합니다.")
-                        .addOption(OptionType.STRING,"상태","바꿀 상태명을 적어주세요.")
+                Commands.slash("상태변경", "봇의 상태를 변경합니다.")
+                        .addOption(OptionType.STRING, "상태", "바꿀 상태명을 적어주세요.")
                         .setContexts(InteractionContextType.GUILD)
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
         );
@@ -49,15 +49,21 @@ public class Main {
                         .setContexts(InteractionContextType.GUILD)
         );
         commands.addCommands(
-                Commands.slash("플리가격","아이템 플리 가격을 대충 표시합니다.")
-                        .addOption(OptionType.STRING,"아이템-이름","아이템 이름을 적어주세요.")
+                Commands.slash("플리가격", "아이템 플리 가격을 대충 표시합니다.")
+                        .addOption(OptionType.STRING, "아이템-이름", "아이템 이름을 적어주세요.")
                         .setContexts(InteractionContextType.GUILD)
 
         );
+        commands.addCommands(
+                Commands.slash("인게임시간", "인게임 시간을 표기합니다")
+                        .setContexts(InteractionContextType.GUILD)
+        );
+        commands.addCommands(
+                Commands.slash("비트코인", "비트코인 가격을 표기합니다")
+                        .setContexts(InteractionContextType.GUILD)
+        );
 
         commands.queue();
-
-
 
 
     }
