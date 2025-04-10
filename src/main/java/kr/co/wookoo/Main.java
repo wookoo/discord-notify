@@ -69,7 +69,7 @@ public class Main {
                         .setContexts(InteractionContextType.GUILD)
         );
         commands.addCommands(
-                Commands.slash("관전등록", "달려있는 관전을 떼버립니다")
+                Commands.slash("관전등록", "관전을 등록합니다")
                         .setContexts(InteractionContextType.GUILD)
         );
 //        commands.addCommands(

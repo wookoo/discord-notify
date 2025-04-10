@@ -131,6 +131,7 @@ public class CommandReceiver extends ListenerAdapter {
                 event.reply("관전 취소~").setEphemeral(true).queue();
                 break;
             case "관전등록":
+//                System.out.println(event.getMember());
                 ChannelJoinReceiver.addMemberPrefix(event.getMember());
                 event.reply("관전 등록~").setEphemeral(true).queue();
             case "비트코인":

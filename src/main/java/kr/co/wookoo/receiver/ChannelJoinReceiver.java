@@ -16,7 +16,7 @@ public class ChannelJoinReceiver extends ListenerAdapter {
 
     private final String TARGET_NICKNAME = "";
 
-    private static final String PREFIX = "[관전]";
+    private static final String PREFIX = "〔관전〕";
 
 
     @Override
@@ -56,6 +56,7 @@ public class ChannelJoinReceiver extends ListenerAdapter {
     public static void addMemberPrefix(Member member) {
 
         String nickName = member.getEffectiveName();
+        System.out.println(nickName);
         if (nickName.startsWith(PREFIX)) {
             return;
         }
