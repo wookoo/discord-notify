@@ -1,5 +1,6 @@
 package kr.co.wookoo;
 
+import kr.co.wookoo.receiver.ChannelJoinReceiver;
 import kr.co.wookoo.receiver.CommandReceiver;
 import kr.co.wookoo.receiver.MessageReceiver;
 import net.dv8tion.jda.api.JDA;
@@ -28,7 +29,7 @@ public class Main {
 
         JDA jda = JDABuilder.createDefault(token)
                 .enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT)
-                .addEventListeners(new MessageReceiver(), new AutoChat(), new CommandReceiver())
+                .addEventListeners(new MessageReceiver(), new AutoChat(), new CommandReceiver(), new ChannelJoinReceiver())
                 .setActivity(Activity.playing("허리수술 2000만원"))
                 .build();
 
@@ -62,6 +63,19 @@ public class Main {
                 Commands.slash("비트코인", "비트코인 가격을 표기합니다")
                         .setContexts(InteractionContextType.GUILD)
         );
+
+        commands.addCommands(
+                Commands.slash("관전취소", "달려있는 관전을 떼버립니다")
+                        .setContexts(InteractionContextType.GUILD)
+        );
+        commands.addCommands(
+                Commands.slash("관전등록", "달려있는 관전을 떼버립니다")
+                        .setContexts(InteractionContextType.GUILD)
+        );
+//        commands.addCommands(
+//                Commands.slash("자동관전", "채팅방 입장시 자동으로 관전을 달아버립니다.")
+//                        .setContexts(InteractionContextType.GUILD)
+//        );
 
         commands.queue();
 

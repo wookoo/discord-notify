@@ -126,6 +126,13 @@ public class CommandReceiver extends ListenerAdapter {
 
                 break;
 
+            case "관전취소":
+                ChannelJoinReceiver.removeMemberPrefix(event.getMember());
+                event.reply("관전 취소~").setEphemeral(true).queue();
+                break;
+            case "관전등록":
+                ChannelJoinReceiver.addMemberPrefix(event.getMember());
+                event.reply("관전 등록~").setEphemeral(true).queue();
             case "비트코인":
                 GraphQLClient graphQLClient = new GraphQLClient();
                 try {

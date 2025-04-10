@@ -16,7 +16,7 @@ public class MessageReceiver extends ListenerAdapter {
         }
 
 
-        Member sender = event.getMember(); // 채팅 친 유저의 Member 객체
+        Member sender = event.getMember(); // 채팅 친 유저의 MemberTemp 객체
 
         EmbedBuilder embed = new EmbedBuilder()
                 .setImage("https://cdn.discordapp.com/attachments/1343911144431026187/1358747559627194399/2vM_UXCLnU8R-qzGDZuwOtnsl4Im-ljoeXCuP62X4doxngeYjHIKABvB1As8BEKLEYatuMwspQLIDTgXE8Busg.webp?ex=67f4f7c6&is=67f3a646&hm=d73f4978857307a025363a9564db726b4f11490645c60479763dca19243149fc&");
@@ -33,7 +33,6 @@ public class MessageReceiver extends ListenerAdapter {
 
                 StringBuilder sb = new StringBuilder();
                 channel.getMembers().forEach(member -> {
-
                     sb.append(member.getAsMention());
                 });
                 if (!sb.toString().isEmpty()) { //멤버가 있으면
