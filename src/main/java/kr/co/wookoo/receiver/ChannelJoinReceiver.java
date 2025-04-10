@@ -14,7 +14,7 @@ public class ChannelJoinReceiver extends ListenerAdapter {
     public static HashMap<String, MemberTemp> joinedMember = new HashMap<>();
 
 
-    private final String TARGET_NICKNAME = "241922585623789571";
+    private final String TARGET_NICKNAME = "";
 
     private static final String PREFIX = "[관전]";
 
@@ -42,16 +42,14 @@ public class ChannelJoinReceiver extends ListenerAdapter {
 
     private void onMemberJoinVoiceChannel(GuildVoiceUpdateEvent event) {
 
-        if (event.getMember().getId().equals(TARGET_NICKNAME)) {
-
-//            addMemberPrefix(event.getMember());
-        }
+//        if (event.getMember().getId().equals(TARGET_NICKNAME)) {
+//
+////            addMemberPrefix(event.getMember());
+//        }
     }
 
     private void onMemberLeaveVoiceChannel(GuildVoiceUpdateEvent event) {
-        if (event.getMember().getId().equals(TARGET_NICKNAME)) {
-            removeMemberPrefix(event.getMember());
-        }
+        removeMemberPrefix(event.getMember());
 
     }
 
