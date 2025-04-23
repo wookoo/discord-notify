@@ -3,6 +3,7 @@ package kr.co.wookoo.discord.events;
 
 import kr.co.wookoo.discord.service.NickNameService;
 import kr.co.wookoo.discord.service.NotificationService;
+import kr.co.wookoo.discord.service.SpectateService;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -15,6 +16,7 @@ public class CommandEvent extends ListenerAdapter {
 
     private final NickNameService nickNameService;
     private final NotificationService notificationService;
+    private final SpectateService spectateService;
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
@@ -40,6 +42,14 @@ public class CommandEvent extends ListenerAdapter {
             case "알림발송" -> {
                 notificationService.notify(event.getGuild());
                 event.reply("발송 완료").setEphemeral(true).queue();
+            }
+            case "자동관전등록" ->{
+                spectateService.activate(event.getMember());
+                event.reply("등록 완료~").setEphemeral(true).queue();
+            }
+            case "자동관전취소" ->{
+                spectateService.deActivate(event.getMember());
+                event.reply("등록 취소~").setEphemeral(true).queue();
             }
             default -> {
                 event.reply("없는 명령어거나 구현중~").setEphemeral(true).queue();

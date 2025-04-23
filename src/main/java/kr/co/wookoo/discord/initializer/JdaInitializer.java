@@ -64,6 +64,10 @@ public class JdaInitializer implements CommandLineRunner {
                 Commands.slash("관전취소", "달려있는 관전을 떼버립니다")
                         .setContexts(InteractionContextType.GUILD),
                 Commands.slash("관전등록", "관전을 등록합니다")
+                        .setContexts(InteractionContextType.GUILD),
+                Commands.slash("자동관전등록", "통화방 입장시 자동으로 관전이 등록됩니다")
+                        .setContexts(InteractionContextType.GUILD),
+                Commands.slash("자동관전취소", "통화방 입장시 자동 관전을 해제합니다")
                         .setContexts(InteractionContextType.GUILD)
         );
         commands.queue();

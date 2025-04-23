@@ -1,6 +1,8 @@
 package kr.co.wookoo.discord.events;
 
+import kr.co.wookoo.discord.entity.Spectate;
 import kr.co.wookoo.discord.service.NickNameService;
+import kr.co.wookoo.discord.service.SpectateService;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
@@ -15,6 +17,7 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 public class VoiceChannelEvent extends ListenerAdapter {
     private final NickNameService nickNameService;
+    private final SpectateService spectateService;
     @Override
     public void onGuildVoiceUpdate(GuildVoiceUpdateEvent event) {
         AudioChannel oldChannel = event.getOldValue();
@@ -36,12 +39,11 @@ public class VoiceChannelEvent extends ListenerAdapter {
     }
 
     private void onMemberJoinVoiceChannel(GuildVoiceUpdateEvent event) {
-
-
         Member member = event.getMember();
         if(member.getUser().isBot()){
             return;
         }
+        spectateService.autoSpectate(member);
     }
 
     private void onMemberLeaveVoiceChannel(GuildVoiceUpdateEvent event) {
