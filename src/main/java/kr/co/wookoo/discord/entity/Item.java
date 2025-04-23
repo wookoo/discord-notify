@@ -37,5 +37,9 @@ public class Item {
         this.fleaMarketSellable = fleaMarketSellable;
         this.wikiLink = wikiLink;
     }
+
+    public String getImageLink() {
+        return "https://assets.tarkov.dev/" + this.tarkovDevfk + "-base-image.webp";
+    }
 }
 

@@ -5,6 +5,8 @@ import kr.co.wookoo.discord.entity.Item;
 import kr.co.wookoo.discord.graphql.dto.GraphQLItemDto;
 import kr.co.wookoo.discord.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +26,7 @@ public class ItemService {
     //플리마켓 전용 검색
     public List<ItemDto> findByName(String name) {
 
-        List<Item> itemList = itemRepository.findByKeyword(name, PageRequest.of(0,25));
+        List<Item> itemList = itemRepository.findByKeyword(name, PageRequest.of(0, 25));
         return itemList.stream().map(ItemDto::from).toList();
 
     }
@@ -49,11 +51,20 @@ public class ItemService {
         }
     }
 
-    public void findById(long id){
-        itemRepository.findById(id).ifPresent(item -> {
-            String tarkovDevfk = item.getTarkovDevfk();
-            //web 혹은 DB 에서 최근 1주일 가격 가져오기
-        });
+    public MessageEmbed findById(long id) {
+        Item item = itemRepository.findById(id).orElse(null);
+        if (item == null) {
+            return null;
+        }
+        String tarkovDevfk = item.getTarkovDevfk();
+        return new EmbedBuilder()
+                .setImage(item.getImageLink())
+                .setTitle(item.getKorean())
+                .setDescription("아직 서버 연동중이라 이정도만 ㅎㅎ;")
+                .setUrl(item.getWikiLink())
+                .build();
+//                    .setDescription("1주간 평균 가격 : " + avg + "\n(" + formattedTime + " ~ " + Instant.ofEpochMilli(itemPriceList.get(itemPriceList.size() - 1).getTimestamp()).atZone(ZoneId.of("Asia/Seoul")).format(formatter) + ")");
     }
-
 }
+
+
