@@ -1,8 +1,10 @@
-package kr.co.wookoo.discord.config;
+package kr.co.wookoo.discord.initializer;
 
 //import kr.co.wookoo.discord.events.AutoChat;
 
+import kr.co.wookoo.discord.events.ChatEvent;
 import kr.co.wookoo.discord.events.CommandEvent;
+import kr.co.wookoo.discord.events.VoiceChannelEvent;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
@@ -22,24 +24,22 @@ public class JdaInitializer implements CommandLineRunner {
 
 
     private final String DISCORD_BOT_TOKEN;
-
-    //    private final MessageReceiver messageReceiver;
     private final CommandEvent commandEvent;
-//    private final ChannelJoinReceiver channelJoinReceiver;
-//    private final GuildJoinReceiver guildJoinReceiver;
+    private final VoiceChannelEvent voiceChannelEvent;
+    private final ChatEvent chatEvent;
 
-
-    public JdaInitializer(@Value("${token}") String token, CommandEvent commandEvent) {
+    public JdaInitializer(@Value("${token}") String token, CommandEvent commandEvent, VoiceChannelEvent voiceChannelEvent, ChatEvent chatEvent) {
         this.DISCORD_BOT_TOKEN = token;
         this.commandEvent = commandEvent;
+        this.voiceChannelEvent = voiceChannelEvent;
+        this.chatEvent = chatEvent;
     }
 
     @Override
     public void run(String... args) throws Exception {
         JDA jda = JDABuilder.createDefault(DISCORD_BOT_TOKEN)
                 .enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS)
-                .addEventListeners(commandEvent)
-//                .addEventListeners(messageReceiver, autoChat, commandReceiver, channelJoinReceiver, guildJoinReceiver)
+                .addEventListeners(commandEvent, voiceChannelEvent, chatEvent)
                 .setActivity(Activity.playing("허리수술 2000만원"))
                 .build();
 
