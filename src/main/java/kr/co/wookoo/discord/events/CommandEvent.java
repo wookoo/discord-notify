@@ -1,6 +1,7 @@
 package kr.co.wookoo.discord.events;
 
 
+import kr.co.wookoo.discord.constant.BotConstant;
 import kr.co.wookoo.discord.dto.ItemDto;
 import kr.co.wookoo.discord.service.ItemService;
 import kr.co.wookoo.discord.service.NickNameService;
@@ -41,28 +42,29 @@ public class CommandEvent extends ListenerAdapter {
             return;
         }
 
+
         switch (event.getName()) {
-            case "관전등록" -> {
+            case BotConstant.CMD_SPECTATE_ON -> {
                 nickNameService.addPrefix(event.getMember());
                 event.reply("관전 등록~").setEphemeral(true).queue();
             }
-            case "관전취소" -> {
+            case BotConstant.CMD_SPECTATE_OFF -> {
                 nickNameService.removePrefix(event.getMember());
                 event.reply("관전 취소~").setEphemeral(true).queue();
             }
-            case "알림발송" -> {
+            case BotConstant.CMD_NOTIFY -> {
                 notificationService.notify(event.getGuild());
                 event.reply("발송 완료").setEphemeral(true).queue();
             }
-            case "자동관전등록" -> {
+            case BotConstant.CMD_AUTO_ON -> {
                 spectateService.activate(event.getMember());
                 event.reply("등록 완료~").setEphemeral(true).queue();
             }
-            case "자동관전취소" -> {
+            case BotConstant.CMD_AUTO_OFF -> {
                 spectateService.deActivate(event.getMember());
                 event.reply("등록 취소~").setEphemeral(true).queue();
             }
-            case "플리가격" -> {
+            case BotConstant.CMD_PRICE -> {
                 OptionMapping option = event.getOption("아이템-이름");
                 if (option == null) {
                     event.reply("아이템 이름이 없는거 같은데~").setEphemeral(true).queue();
@@ -78,7 +80,7 @@ public class CommandEvent extends ListenerAdapter {
                 List<Button> buffer = new ArrayList<>();
                 for (int i = 0; i < itemDtoList.size(); i++) {
                     ItemDto dto = itemDtoList.get(i);
-                    Button btn = Button.secondary("item:" + dto.getTarkovDevfk(), dto.getKorean());
+                    Button btn = Button.secondary(BotConstant.ITEM_BUTTON_PREFIX + dto.getId(), dto.getKorean());
                     buffer.add(btn);
                     if (buffer.size() == 5 || i == itemDtoList.size() - 1) {
                         rows.add(ActionRow.of(buffer));

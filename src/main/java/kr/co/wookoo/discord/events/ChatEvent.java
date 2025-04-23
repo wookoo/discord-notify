@@ -1,5 +1,6 @@
 package kr.co.wookoo.discord.events;
 
+import kr.co.wookoo.discord.constant.BotConstant;
 import kr.co.wookoo.discord.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,7 @@ public class ChatEvent extends ListenerAdapter {
         }
 
         String message = event.getMessage().getContentRaw();
-        if(!message.startsWith("!이미지등록")){
+        if(!message.startsWith(BotConstant.CMD_IMAGE_ADD)){
             return;
         }
         List<Message.Attachment> attachments = event.getMessage().getAttachments();

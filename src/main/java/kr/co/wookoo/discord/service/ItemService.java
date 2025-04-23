@@ -49,4 +49,11 @@ public class ItemService {
         }
     }
 
+    public void findById(long id){
+        itemRepository.findById(id).ifPresent(item -> {
+            String tarkovDevfk = item.getTarkovDevfk();
+            //web 혹은 DB 에서 최근 1주일 가격 가져오기
+        });
+    }
+
 }

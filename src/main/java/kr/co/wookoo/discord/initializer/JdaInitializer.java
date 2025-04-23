@@ -2,9 +2,8 @@ package kr.co.wookoo.discord.initializer;
 
 //import kr.co.wookoo.discord.events.AutoChat;
 
-import kr.co.wookoo.discord.events.ChatEvent;
-import kr.co.wookoo.discord.events.CommandEvent;
-import kr.co.wookoo.discord.events.VoiceChannelEvent;
+import kr.co.wookoo.discord.constant.BotConstant;
+import kr.co.wookoo.discord.events.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
@@ -27,25 +26,29 @@ public class JdaInitializer implements CommandLineRunner {
     private final CommandEvent commandEvent;
     private final VoiceChannelEvent voiceChannelEvent;
     private final ChatEvent chatEvent;
+    private final GuildJoinEvent guildJoinEvent;
+    private final ButtonEvent buttonEvent;
 
-    public JdaInitializer(@Value("${token}") String token, CommandEvent commandEvent, VoiceChannelEvent voiceChannelEvent, ChatEvent chatEvent) {
+    public JdaInitializer(@Value("${token}") String token, CommandEvent commandEvent, VoiceChannelEvent voiceChannelEvent, ChatEvent chatEvent, GuildJoinEvent guildJoinEvent, ButtonEvent buttonEvent) {
         this.DISCORD_BOT_TOKEN = token;
         this.commandEvent = commandEvent;
         this.voiceChannelEvent = voiceChannelEvent;
         this.chatEvent = chatEvent;
+        this.guildJoinEvent = guildJoinEvent;
+        this.buttonEvent = buttonEvent;
     }
 
     @Override
     public void run(String... args) throws Exception {
         JDA jda = JDABuilder.createDefault(DISCORD_BOT_TOKEN)
                 .enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS)
-                .addEventListeners(commandEvent, voiceChannelEvent, chatEvent)
+                .addEventListeners(commandEvent, voiceChannelEvent, chatEvent, guildJoinEvent, buttonEvent)
                 .setActivity(Activity.playing("허리수술 2000만원"))
                 .build();
 
         CommandListUpdateAction commands = jda.updateCommands();
         commands.addCommands(
-                Commands.slash("알림발송", "분탕 알림을 발송합니다.")
+                Commands.slash(BotConstant.CMD_NOTIFY, "분탕 알림을 발송합니다.")
                         .setContexts(InteractionContextType.GUILD)
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)),
                 Commands.slash("상태변경", "봇의 상태를 변경합니다.")
@@ -54,20 +57,20 @@ public class JdaInitializer implements CommandLineRunner {
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)),
                 Commands.slash("상인시간", "남은 상인시간을 표시합니다.")
                         .setContexts(InteractionContextType.GUILD),
-                Commands.slash("플리가격", "아이템 플리 가격을 대충 표시합니다.")
+                Commands.slash(BotConstant.CMD_PRICE, "아이템 플리 가격을 대충 표시합니다.")
                         .addOption(OptionType.STRING, "아이템-이름", "아이템 이름을 적어주세요.")
                         .setContexts(InteractionContextType.GUILD),
                 Commands.slash("인게임시간", "인게임 시간을 표기합니다")
                         .setContexts(InteractionContextType.GUILD),
                 Commands.slash("비트코인", "비트코인 가격을 표기합니다")
                         .setContexts(InteractionContextType.GUILD),
-                Commands.slash("관전취소", "달려있는 관전을 떼버립니다")
+                Commands.slash(BotConstant.CMD_SPECTATE_OFF, "달려있는 관전을 떼버립니다")
                         .setContexts(InteractionContextType.GUILD),
-                Commands.slash("관전등록", "관전을 등록합니다")
+                Commands.slash(BotConstant.CMD_SPECTATE_ON, "관전을 등록합니다")
                         .setContexts(InteractionContextType.GUILD),
-                Commands.slash("자동관전등록", "통화방 입장시 자동으로 관전이 등록됩니다")
+                Commands.slash(BotConstant.CMD_AUTO_ON, "통화방 입장시 자동으로 관전이 등록됩니다")
                         .setContexts(InteractionContextType.GUILD),
-                Commands.slash("자동관전취소", "통화방 입장시 자동 관전을 해제합니다")
+                Commands.slash(BotConstant.CMD_AUTO_OFF, "통화방 입장시 자동 관전을 해제합니다")
                         .setContexts(InteractionContextType.GUILD)
         );
         commands.queue();
