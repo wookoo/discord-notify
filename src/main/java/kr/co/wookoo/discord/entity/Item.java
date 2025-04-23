@@ -1,11 +1,11 @@
 package kr.co.wookoo.discord.entity;
 
 import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@NoArgsConstructor
-
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Table(
         name = "item",
         indexes = {
@@ -21,8 +21,21 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String tarkovDevfk;
+    @Setter
     private String korean;
+    @Setter
     private String english;
     private Boolean fleaMarketSellable;
+    private String wikiLink;
+
+
+    @Builder(access = AccessLevel.PUBLIC)
+    private Item(String tarkovDevfk, String korean, String english, Boolean fleaMarketSellable, String wikiLink) {
+        this.tarkovDevfk = tarkovDevfk;
+        this.korean = korean;
+        this.english = english;
+        this.fleaMarketSellable = fleaMarketSellable;
+        this.wikiLink = wikiLink;
+    }
 }
 

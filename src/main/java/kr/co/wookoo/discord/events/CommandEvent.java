@@ -1,13 +1,23 @@
 package kr.co.wookoo.discord.events;
 
 
+import kr.co.wookoo.discord.dto.ItemDto;
+import kr.co.wookoo.discord.service.ItemService;
 import kr.co.wookoo.discord.service.NickNameService;
 import kr.co.wookoo.discord.service.NotificationService;
 import kr.co.wookoo.discord.service.SpectateService;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static ch.qos.logback.core.joran.spi.ConsoleTarget.findByName;
 
 @Component
 @RequiredArgsConstructor
@@ -17,6 +27,7 @@ public class CommandEvent extends ListenerAdapter {
     private final NickNameService nickNameService;
     private final NotificationService notificationService;
     private final SpectateService spectateService;
+    private final ItemService itemService;
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
@@ -43,16 +54,47 @@ public class CommandEvent extends ListenerAdapter {
                 notificationService.notify(event.getGuild());
                 event.reply("발송 완료").setEphemeral(true).queue();
             }
-            case "자동관전등록" ->{
+            case "자동관전등록" -> {
                 spectateService.activate(event.getMember());
                 event.reply("등록 완료~").setEphemeral(true).queue();
             }
-            case "자동관전취소" ->{
+            case "자동관전취소" -> {
                 spectateService.deActivate(event.getMember());
                 event.reply("등록 취소~").setEphemeral(true).queue();
             }
+            case "플리가격" -> {
+                OptionMapping option = event.getOption("아이템-이름");
+                if (option == null) {
+                    event.reply("아이템 이름이 없는거 같은데~").setEphemeral(true).queue();
+                    return;
+                }
+                String name = option.getAsString();
+                List<ItemDto> itemDtoList = itemService.findByName(name);
+                if (itemDtoList.isEmpty()) {
+                    event.reply("음 아이템이 플리 벤이거나 없는걸 검색한거같은데").setEphemeral(true).queue();
+                    return;
+                }
+                List<ActionRow> rows = new ArrayList<>();
+                List<Button> buffer = new ArrayList<>();
+                for (int i = 0; i < itemDtoList.size(); i++) {
+                    ItemDto dto = itemDtoList.get(i);
+                    Button btn = Button.secondary("item:" + dto.getTarkovDevfk(), dto.getKorean());
+                    buffer.add(btn);
+                    if (buffer.size() == 5 || i == itemDtoList.size() - 1) {
+                        rows.add(ActionRow.of(buffer));
+                        buffer = new ArrayList<>();
+                    }
+                    if (rows.size() == 5) break;
+                }
+                event.reply("자네가 고른 아이템은 뭔가?")
+                        .addComponents(rows)
+                        .setEphemeral(true)
+                        .queue();
+            }
             default -> {
-                event.reply("없는 명령어거나 구현중~").setEphemeral(true).queue();
+                event.reply("코드 갈아 엎어서 아직 구현이 안됬음")
+                        .setEphemeral(true)
+                        .queue();
             }
 
         }
