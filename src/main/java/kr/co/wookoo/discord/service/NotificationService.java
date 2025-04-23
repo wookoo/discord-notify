@@ -5,8 +5,10 @@ import kr.co.wookoo.discord.repository.NotificationImageRepository;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -53,5 +55,18 @@ public class NotificationService {
         }
 
         return result;
+    }
+
+    public void sendWelcomeMessage(Guild guild, Member member) {
+        String memberName = member.getAsMention();
+        List<TextChannel> channelList = guild.getTextChannels();
+        TextChannel channel = channelList.get(0);
+        for (TextChannel c : channelList) {
+            if (c.getName().contains("자유")) {
+                channel = c;
+                break;
+            }
+        }
+        channel.sendMessage(memberName + "공지 스근하게 읽고 닉네임 바꿔주셔~").queue();
     }
 }
