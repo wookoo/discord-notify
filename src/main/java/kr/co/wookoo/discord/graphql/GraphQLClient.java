@@ -30,6 +30,7 @@ public class GraphQLClient {
                 id
                 name
                 wikiLink
+                fleaMarketFee
               }
             }
         """, lang);

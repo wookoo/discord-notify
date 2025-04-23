@@ -37,7 +37,7 @@ public class ItemService {
             Item item = itemRepository.findByTarkovDevfk(id).orElse(null);
 
             if (item == null) {
-                item = Item.builder().korean(koItem.getName()).fleaMarketSellable(true).wikiLink(koItem.getWikiLink()).tarkovDevfk(id).build();
+                item = Item.builder().korean(koItem.getName()).fleaMarketSellable(koItem.getFleaMarketFee()!=null).wikiLink(koItem.getWikiLink()).tarkovDevfk(id).build();
             } else {
                 item.setKorean(koItem.getName()); // 한글만 업데이트
             }

@@ -10,4 +10,5 @@ public class GraphQLItemDto {
     private String id;
     private String name;
     private String wikiLink;
+    private Integer fleaMarketFee;
 }
