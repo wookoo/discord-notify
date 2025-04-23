@@ -64,7 +64,10 @@ public class AutoChat extends ListenerAdapter {
                             .min(Comparator.comparing(TraderResetTime::getResetTime))
                             .orElse(null);
 
-                    if (nextReset == null) return;
+                    if (nextReset == null) {
+                        scheduler.schedule(this, 1, TimeUnit.HOURS);
+                        return;
+                    }
 
                     Instant resetTime = nextReset.getResetTime();
                     long delayMillis = Duration.between(now, resetTime).toMillis();
@@ -76,12 +79,13 @@ public class AutoChat extends ListenerAdapter {
                             }
                         });
                         // 다음 리셋을 위한 재귀 예약
+
                         scheduler.execute(this);
                     };
                     scheduler.schedule(notifyAndReschedule, delayMillis, TimeUnit.MILLISECONDS);
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } catch (Exception ignored) {
+
                 }
             }
         };
