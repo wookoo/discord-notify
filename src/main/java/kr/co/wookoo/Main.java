@@ -2,6 +2,7 @@ package kr.co.wookoo;
 
 import kr.co.wookoo.receiver.ChannelJoinReceiver;
 import kr.co.wookoo.receiver.CommandReceiver;
+import kr.co.wookoo.receiver.GuildJoinReceiver;
 import kr.co.wookoo.receiver.MessageReceiver;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -28,8 +29,9 @@ public class Main {
 
 
         JDA jda = JDABuilder.createDefault(token)
-                .enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT)
-                .addEventListeners(new MessageReceiver(), new AutoChat(), new CommandReceiver(), new ChannelJoinReceiver())
+                .enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT,GatewayIntent.GUILD_MEMBERS)
+                .addEventListeners(new MessageReceiver(), new AutoChat(), new CommandReceiver(), new ChannelJoinReceiver(),
+                        new GuildJoinReceiver())
                 .setActivity(Activity.playing("허리수술 2000만원"))
                 .build();
 
