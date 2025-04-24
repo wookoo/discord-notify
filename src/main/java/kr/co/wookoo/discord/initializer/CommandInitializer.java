@@ -4,6 +4,7 @@ package kr.co.wookoo.discord.initializer;
 
 import kr.co.wookoo.discord.constant.BotConstant;
 import kr.co.wookoo.discord.events.*;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
@@ -19,32 +20,15 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JdaInitializer implements CommandLineRunner {
+@RequiredArgsConstructor
+public class CommandInitializer implements CommandLineRunner {
 
+    private final JDA jda;
 
-    private final String DISCORD_BOT_TOKEN;
-    private final CommandEvent commandEvent;
-    private final VoiceChannelEvent voiceChannelEvent;
-    private final ChatEvent chatEvent;
-    private final GuildJoinEvent guildJoinEvent;
-    private final ButtonEvent buttonEvent;
-
-    public JdaInitializer(@Value("${token}") String token, CommandEvent commandEvent, VoiceChannelEvent voiceChannelEvent, ChatEvent chatEvent, GuildJoinEvent guildJoinEvent, ButtonEvent buttonEvent) {
-        this.DISCORD_BOT_TOKEN = token;
-        this.commandEvent = commandEvent;
-        this.voiceChannelEvent = voiceChannelEvent;
-        this.chatEvent = chatEvent;
-        this.guildJoinEvent = guildJoinEvent;
-        this.buttonEvent = buttonEvent;
-    }
 
     @Override
     public void run(String... args) throws Exception {
-        JDA jda = JDABuilder.createDefault(DISCORD_BOT_TOKEN)
-                .enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS)
-                .addEventListeners(commandEvent, voiceChannelEvent, chatEvent, guildJoinEvent, buttonEvent)
-                .setActivity(Activity.playing("허리수술 2000만원"))
-                .build();
+
 
         CommandListUpdateAction commands = jda.updateCommands();
         commands.addCommands(
@@ -71,7 +55,11 @@ public class JdaInitializer implements CommandLineRunner {
                 Commands.slash(BotConstant.CMD_AUTO_ON, "통화방 입장시 자동으로 관전이 등록됩니다")
                         .setContexts(InteractionContextType.GUILD),
                 Commands.slash(BotConstant.CMD_AUTO_OFF, "통화방 입장시 자동 관전을 해제합니다")
+                        .setContexts(InteractionContextType.GUILD),
+                Commands.slash(BotConstant.CMD_MESSAGE,"분탕 알림에 보낼 내용을 추가합니다")
+                        .addOption(OptionType.STRING,"내용","추가할 내용")
                         .setContexts(InteractionContextType.GUILD)
+                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
         );
         commands.queue();
     }
