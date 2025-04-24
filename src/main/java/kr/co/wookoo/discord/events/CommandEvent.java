@@ -93,6 +93,15 @@ public class CommandEvent extends ListenerAdapter {
                         .setEphemeral(true)
                         .queue();
             }
+//            case BotConstant.CMD_MESSAGE -> {
+//                OptionMapping option = event.getOption("내용");
+//                if (option == null) {
+//                    event.reply("내용이 없는거 같은데~").setEphemeral(true).queue();
+//                    return;
+//                }
+//                notificationService.addNotification(option.getAsString());
+//                event.reply(option.getAsString() + "등록 완료").setEphemeral(true).queue();
+//            }
             default -> {
                 event.reply("코드 갈아 엎어서 아직 구현이 안됬음")
                         .setEphemeral(true)

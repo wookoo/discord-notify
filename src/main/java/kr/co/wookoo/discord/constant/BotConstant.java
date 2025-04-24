@@ -12,5 +12,6 @@ public class BotConstant {
     public static final String CMD_AUTO_ON = "자동관전등록";
     public static final String CMD_AUTO_OFF = "자동관전취소";
     public static final String CMD_PRICE = "플리가격";
-    public static final String CMD_IMAGE_ADD = "!이미지등록";
+    public static final String CMD_MESSAGE_ADD = "!알림등록";
+    public static final String CMD_MESSAGE = "내용등록";
 }
