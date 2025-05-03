@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.net.http.HttpClient;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class DiscordConfig {
@@ -46,7 +47,11 @@ public class DiscordConfig {
 
     @Bean
     public OkHttpClient httpClient() {
-        return new OkHttpClient(); // 커넥션 풀 공유 가능
+        return new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
+                .build();
     }
 
     @Bean
