@@ -26,7 +26,7 @@ public class DiscordConfig {
     private final GuildJoinEvent guildJoinEvent;
     private final ButtonEvent buttonEvent;
 
-    public DiscordConfig(@Value("${token}") String token, CommandEvent commandEvent, VoiceChannelEvent voiceChannelEvent, ChatEvent chatEvent, GuildJoinEvent guildJoinEvent, ButtonEvent buttonEvent) {
+    public DiscordConfig(@Value("${TOKEN}") String token, CommandEvent commandEvent, VoiceChannelEvent voiceChannelEvent, ChatEvent chatEvent, GuildJoinEvent guildJoinEvent, ButtonEvent buttonEvent) {
         this.DISCORD_BOT_TOKEN = token;
         this.commandEvent = commandEvent;
         this.voiceChannelEvent = voiceChannelEvent;

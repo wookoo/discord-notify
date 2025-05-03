@@ -2,6 +2,7 @@ package kr.co.wookoo.discord.events;
 
 import kr.co.wookoo.discord.entity.Spectate;
 import kr.co.wookoo.discord.service.NickNameService;
+import kr.co.wookoo.discord.service.NotificationService;
 import kr.co.wookoo.discord.service.SpectateService;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Member;
@@ -18,6 +19,8 @@ import java.util.HashMap;
 public class VoiceChannelEvent extends ListenerAdapter {
     private final NickNameService nickNameService;
     private final SpectateService spectateService;
+    private final NotificationService notificationService;
+
     @Override
     public void onGuildVoiceUpdate(GuildVoiceUpdateEvent event) {
         AudioChannel oldChannel = event.getOldValue();
@@ -36,6 +39,19 @@ public class VoiceChannelEvent extends ListenerAdapter {
 
     private void onMemberMoveVoiceChannel(GuildVoiceUpdateEvent event) {
 
+
+        AudioChannel oldChannel = event.getOldValue();
+        AudioChannel newChannel = event.getNewValue();
+
+        Member member = event.getMember();
+
+
+
+
+        notificationService.sendVoiceChannelJoinMessage(member,newChannel);
+        notificationService.sendVoiceChannelLeaveMessage(member,oldChannel);
+
+
     }
 
     private void onMemberJoinVoiceChannel(GuildVoiceUpdateEvent event) {
@@ -44,6 +60,7 @@ public class VoiceChannelEvent extends ListenerAdapter {
             return;
         }
         spectateService.autoSpectate(member);
+        notificationService.sendVoiceChannelJoinMessage(member,event.getNewValue());
     }
 
     private void onMemberLeaveVoiceChannel(GuildVoiceUpdateEvent event) {
@@ -51,5 +68,6 @@ public class VoiceChannelEvent extends ListenerAdapter {
             return;
         }
         nickNameService.removePrefix(event.getMember());
+        notificationService.sendVoiceChannelLeaveMessage(event.getMember(),event.getOldValue());
     }
 }

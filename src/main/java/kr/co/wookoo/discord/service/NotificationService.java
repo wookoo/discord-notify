@@ -3,16 +3,26 @@ package kr.co.wookoo.discord.service;
 import kr.co.wookoo.discord.entity.Notification;
 import kr.co.wookoo.discord.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
@@ -68,5 +78,36 @@ public class NotificationService {
             }
         }
         channel.sendMessage(memberName + "공지 스근하게 읽고 닉네임 바꿔주셔~").queue();
+    }
+
+    public void sendVoiceChannelJoinMessage(Member member, AudioChannel audioChannel) {
+
+
+        sendVoiceChannelMessage(member,audioChannel,true);
+
+    }
+
+    public void sendVoiceChannelLeaveMessage(Member member, AudioChannel audioChannel) {
+        sendVoiceChannelMessage(member,audioChannel,false);
+    }
+
+    private void sendVoiceChannelMessage(Member member, AudioChannel audioChannel,boolean flag) {
+        Long channelId = audioChannel.getIdLong();
+        Guild guild = audioChannel.getGuild();
+        VoiceChannel channel = guild.getChannelById(VoiceChannel.class, channelId);
+
+        if(channel == null) {
+            return;
+        }
+        String message = member.getEffectiveName() ;
+        if(flag){
+            message += "가 난입했다!";
+        }
+        else{
+            message += "가 도망갔다!";
+        }
+
+        channel.sendMessage(message).queue();
+
     }
 }
