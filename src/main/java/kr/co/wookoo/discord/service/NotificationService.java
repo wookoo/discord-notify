@@ -89,7 +89,9 @@ public class NotificationService {
     }
 
     public void sendVoiceChannelLeaveMessage(Member member, AudioChannel audioChannel) {
-        sendVoiceChannelMessage(member,audioChannel,LEAVE_MESSAGE);
+        try {
+            sendVoiceChannelMessage(member,audioChannel,LEAVE_MESSAGE);
+        }catch (Exception ignored) {}
     }
 
     private void sendVoiceChannelMessage(Member member, AudioChannel audioChannel,boolean flag) {
@@ -107,7 +109,6 @@ public class NotificationService {
         else{
             message += "가 도망갔다!";
         }
-
         channel.sendMessage(message).queue();
 
     }
