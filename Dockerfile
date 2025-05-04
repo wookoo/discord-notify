@@ -6,4 +6,4 @@ FROM eclipse-temurin:17-jdk AS runtime
 WORKDIR /app
 ENV TZ=Asia/Seoul
 COPY --from=builder /app/build/libs/*.jar /app/app.jar
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=deploy", "-jar", "/app/app.jar"]
