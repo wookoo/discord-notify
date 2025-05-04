@@ -3,11 +3,16 @@ package kr.co.wookoo.discord.events;
 
 import kr.co.wookoo.discord.constant.BotConstant;
 import kr.co.wookoo.discord.dto.ItemDto;
+import kr.co.wookoo.discord.entity.Role;
+import kr.co.wookoo.discord.entity.User;
+import kr.co.wookoo.discord.repository.UserRepository;
 import kr.co.wookoo.discord.service.ItemService;
 import kr.co.wookoo.discord.service.NickNameService;
 import kr.co.wookoo.discord.service.NotificationService;
 import kr.co.wookoo.discord.service.SpectateService;
 import lombok.RequiredArgsConstructor;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -29,6 +34,7 @@ public class CommandEvent extends ListenerAdapter {
     private final NotificationService notificationService;
     private final SpectateService spectateService;
     private final ItemService itemService;
+    private final UserRepository userRepository;
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
@@ -53,8 +59,15 @@ public class CommandEvent extends ListenerAdapter {
                 event.reply("관전 취소~").setEphemeral(true).queue();
             }
             case BotConstant.CMD_NOTIFY -> {
-                notificationService.notify(event.getGuild());
-                event.reply("발송 완료").setEphemeral(true).queue();
+                Member member = event.getMember();
+                User user = userRepository.findByMemberId(member.getIdLong()).orElse(null);
+                if(member.hasPermission(Permission.ADMINISTRATOR) || user != null && user.getRole().hasRole(Role.DEVELOPER)) {
+                    notificationService.notify(event.getGuild());
+                    event.reply("발송 완료").setEphemeral(true).queue();
+                    return;
+                }
+                event.reply("권한 부족~").setEphemeral(true).queue();
+
             }
             case BotConstant.CMD_AUTO_ON -> {
                 spectateService.activate(event.getMember());

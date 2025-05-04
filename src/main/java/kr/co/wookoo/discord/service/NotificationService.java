@@ -29,6 +29,8 @@ public class NotificationService {
 
 
     private final NotificationRepository notificationRepository;
+    private final boolean JOIN_MESSAGE = true;
+    private final boolean LEAVE_MESSAGE = false;
 
     public void notify(Guild guild) {
         guild.getVoiceChannels().forEach(channel -> {
@@ -36,7 +38,6 @@ public class NotificationService {
             channel.getMembers().forEach(member -> {
                 sb.append(member.getAsMention());
             });
-
 
             if (!sb.toString().isEmpty()) {
                 Notification notification = notificationRepository.getRandom().orElse(
@@ -83,12 +84,12 @@ public class NotificationService {
     public void sendVoiceChannelJoinMessage(Member member, AudioChannel audioChannel) {
 
 
-        sendVoiceChannelMessage(member,audioChannel,true);
+        sendVoiceChannelMessage(member,audioChannel,JOIN_MESSAGE);
 
     }
 
     public void sendVoiceChannelLeaveMessage(Member member, AudioChannel audioChannel) {
-        sendVoiceChannelMessage(member,audioChannel,false);
+        sendVoiceChannelMessage(member,audioChannel,LEAVE_MESSAGE);
     }
 
     private void sendVoiceChannelMessage(Member member, AudioChannel audioChannel,boolean flag) {
@@ -100,7 +101,7 @@ public class NotificationService {
             return;
         }
         String message = member.getEffectiveName() ;
-        if(flag){
+        if(flag==JOIN_MESSAGE) {
             message += "가 난입했다!";
         }
         else{

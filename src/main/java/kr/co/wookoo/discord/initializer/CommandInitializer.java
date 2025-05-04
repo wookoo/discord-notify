@@ -33,8 +33,7 @@ public class CommandInitializer implements CommandLineRunner {
         CommandListUpdateAction commands = jda.updateCommands();
         commands.addCommands(
                 Commands.slash(BotConstant.CMD_NOTIFY, "분탕 알림을 발송합니다.")
-                        .setContexts(InteractionContextType.GUILD)
-                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)),
+                        .setContexts(InteractionContextType.GUILD),
                 Commands.slash("상태변경", "봇의 상태를 변경합니다.")
                         .addOption(OptionType.STRING, "상태", "바꿀 상태명을 적어주세요.")
                         .setContexts(InteractionContextType.GUILD)
